@@ -1,4 +1,21 @@
-from flask import Blueprint, jsonify, abort, make_response
+from os import abort
+from app import db
+from app.models.book import Book
+from flask import Blueprint, jsonify, abort, make_response, request
+
+
+books_bp = Blueprint("books_bp", __name__, url_prefix="/books")
+
+@books_bp.route("",  methods=["POST"])
+def handle_books():
+    request_body = request.get_json()
+    new_book = Book(title=request_body["title"],
+                    description=request_body["description"])
+    
+    db.session.add(new_book)
+    db.session.commit()
+
+    return make_response(f"Book {new_book.title} successfully created", 201)
 
 
 # class Book:
@@ -14,8 +31,7 @@ from flask import Blueprint, jsonify, abort, make_response
 #     Book(3, "Book C", "Description C"),
 # ]
 
-hello_world_bp = Blueprint("hello_world", __name__)
-books_bp = Blueprint("books", __name__, url_prefix="/books")
+# hello_world_bp = Blueprint("hello_world", __name__)
 
 # # Helper function
 # def validate_book(book_id):
@@ -55,26 +71,26 @@ books_bp = Blueprint("books", __name__, url_prefix="/books")
 #         "description": book.description,
 #     }    
 
-@hello_world_bp.route("/hello-world", methods=["GET"])
-def say_hello_world():
-    my_beautiful_world = "Hello, World!"
-    return my_beautiful_world, 200
+# @hello_world_bp.route("/hello-world", methods=["GET"])
+# def say_hello_world():
+#     my_beautiful_world = "Hello, World!"
+#     return my_beautiful_world, 200
 
-@hello_world_bp.route("/hello/JSON", methods=["GET"])
-def say_hello_json():
-    return {
-        "name": "CheezItMan",
-        "message": "Need more Cheez!",
-        "hobbies": ["Snacks", "Coding", "Gardening"]
-    }, 200
+# @hello_world_bp.route("/hello/JSON", methods=["GET"])
+# def say_hello_json():
+#     return {
+#         "name": "CheezItMan",
+#         "message": "Need more Cheez!",
+#         "hobbies": ["Snacks", "Coding", "Gardening"]
+#     }, 200
 
-@hello_world_bp.route("/broken-endpoint-with-broken-server-code")
-def broken_endpoint():
-    response_body = {
-        "name": "Ada Lovelace",
-        "message": "Hello!",
-        "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
-    }
-    new_hobby = "Surfing"
-    response_body["hobbies"] + new_hobby
-    return response_body
+# @hello_world_bp.route("/broken-endpoint-with-broken-server-code")
+# def broken_endpoint():
+#     response_body = {
+#         "name": "Ada Lovelace",
+#         "message": "Hello!",
+#         "hobbies": ["Fishing", "Swimming", "Watching Reality Shows"]
+#     }
+#     new_hobby = "Surfing"
+#     response_body["hobbies"] + new_hobby
+#     return response_body
