@@ -18,7 +18,6 @@ def read_all_books():
         })
     return jsonify(books_response), 200
 
-
 @books_bp.route("",  methods=["POST"])
 def create_book():
     request_body = request.get_json()
@@ -30,7 +29,29 @@ def create_book():
 
     return make_response(f"Book {new_book.title} successfully created", 201)
 
+# Helper function
+def validate_book(book_id):
+    # handle invalid book_id, return 400
+    try:
+        book_id = int(book_id)
+    except:
+        abort(make_response({"message": f"book {book_id} invalid"}, 400))
 
+    book = Book.query.get(book_id)
+
+    if not book:
+        abort(make_response({"message":f"book {book_id} not found"}, 404))
+    
+    return book
+
+@books_bp.route("/<book_id>", methods=["GET"])
+def read_one_book(book_id):
+    book = validate_book(book_id)
+    return {
+        "id": book.id,
+        "title": book.title,
+        "description": book.description,
+    }  
 
 
 # class Book:
@@ -48,14 +69,6 @@ def create_book():
 
 # hello_world_bp = Blueprint("hello_world", __name__)
 
-# # Helper function
-# def validate_book(book_id):
-#     # handle invalid book_id, return 400
-#     try:
-#         book_id = int(book_id)
-#     except:
-#         abort(make_response({"message": f"book {book_id} invalid"}, 400))
-    
 #     # search for book_id in data, return book
 #     for book in books:
 #         if book.id == book_id:
