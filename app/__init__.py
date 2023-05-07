@@ -15,8 +15,9 @@ def create_app(test_config=None):
     # We are not trying to run the app in a test environment
     if not test_config:
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-            "SQLALCHEMY_DATABASE_URI")
+        # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        #     "SQLALCHEMY_DATABASE_URI")
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('RENDER_DATABASE_URI')
     # We are trying to test the app
     else:
         # Turns testing mode on
